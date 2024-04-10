@@ -1,15 +1,23 @@
 {
   "name": "demo-testing",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aaqibshaikh20/Demo.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "lodash": "^4.17.21"
+  "bugs": {
+    "url": "https://github.com/Aaqibshaikh20/Demo/issues"
+  },
+  "homepage": "https://github.com/Aaqibshaikh20/Demo#readme",
+  "description": "",
+  "dependencies": {
+    "react": "^18.2.0"
   }
 }
