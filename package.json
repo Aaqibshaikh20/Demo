@@ -23,11 +23,26 @@
     "lodash": "^4.17.21",
     "axios": "^0.24.0",
     "moment": "^2.29.1",
-    // Add a large number of large-sized packages below
     "package1": "1.0.0",
     "package2": "1.0.0",
     "package3": "1.0.0",
-    // Add more large packages here...
+    "package4": "1.0.0",
+    "package5": "1.0.0",
+    "package6": "1.0.0",
+    "package7": "1.0.0",
+    "package8": "1.0.0",
+    "package9": "1.0.0",
+    "package10": "1.0.0",
+    "package11": "1.0.0",
+    "package12": "1.0.0",
+    "package13": "1.0.0",
+    "package14": "1.0.0",
+    "package15": "1.0.0",
+    "package16": "1.0.0",
+    "package17": "1.0.0",
+    "package18": "1.0.0",
+    "package19": "1.0.0",
+    "package20": "1.0.0",
     "package100": "1.0.0"
   }
 }
