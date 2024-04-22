@@ -1,4 +1,9 @@
-# Capture errors from pipeline execution
+param(
+  # Optional parameter to receive workspace path (applicable for YAML pipelines)
+  [Parameter(Mandatory=$false)]
+  [string] $workspacePath
+)
+
 $errorMessages = $null
 
 # Trap terminating errors (errors that would normally stop the pipeline)
@@ -19,7 +24,20 @@ if ($error?) {
 
 # Write captured errors to errors.txt if any exist
 if ($errorMessages -ne $null) {
-  $errorsFilePath = "$(Pipeline.Workspace)\errors.txt"
+  # Determine file path based on environment variable or argument
+  if ($workspacePath) {
+    $errorsFilePath = "$($workspacePath)\errors.txt"  # Use workspace path (from argument)
+  } else {
+    try {
+      # Attempt to use Build.ArtifactStagingDirectory (classic editor)
+      $errorsFilePath = "$(Build.ArtifactStagingDirectory)\errors.txt" 
+    } catch {
+      # Fallback to Agent.BuildDirectory if Build.ArtifactStagingDirectory fails
+      Write-Warning "Build.ArtifactStagingDirectory not available. Using Agent.BuildDirectory."
+      $errorsFilePath = "$(Agent.BuildDirectory)\errors.txt"
+    }
+  }
+  
   Write-Host "Errors detected! Writing to $errorsFilePath..."
   Out-File -FilePath $errorsFilePath -InputObject $errorMessages -Append -Encoding UTF8
   
