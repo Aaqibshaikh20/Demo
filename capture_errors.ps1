@@ -19,7 +19,7 @@ if ($error?) {
 
 # Write captured errors to errors.txt if any exist
 if ($errorMessages -ne $null) {
-  $errorsFilePath = "$(Build.ArtifactStagingDirectory)\errors.txt"
+  $errorsFilePath = "$(Pipeline.Workspace)\errors.txt"
   Write-Host "Errors detected! Writing to $errorsFilePath..."
   Out-File -FilePath $errorsFilePath -InputObject $errorMessages -Append -Encoding UTF8
   
