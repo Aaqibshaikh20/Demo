@@ -1,6 +1,6 @@
 param(
   # Optional parameter to receive workspace path (applicable for YAML pipelines)
-  [Parameter(Mandatory=$false)]
+  [Parameter(Mandatory=$true)]
   [string] $workspacePath
 )
 
