@@ -1,31 +1,39 @@
 param(
-  # Optional parameter to receive workspace path (applicable for YAML pipelines)
   [Parameter(Mandatory=$true)]
-  [string] $workspacePath
+  [string] $agentWorkDirectory
 )
 
-$errorMessages = $null
+$errorMessages = ""
 
-# Trap terminating errors (errors that would normally stop the pipeline)
-trap {
-  $errorMessages += $_.Exception.Message
+# Loop through each job in the pipeline execution
+$jobs = Get-ChildItem -Path $agentWorkDirectory -Filter "*.log" | Where-Object { $_.Name -match "Job_\d+" }  # Identify job logs
+
+foreach ($jobLog in $jobs) {
+  # Extract job name from the log file name
+  $jobName = $jobLog.Name.Split("_")[1]
+  Write-Host "Checking logs for job: $jobName..."
+
+  # Find job-specific log files (adjust filter if needed)
+  $jobLogFiles = Get-ChildItem -Path $jobLog.FullName.Replace(".log", "") -Filter "*.log"
+
+  $jobErrorMessages = ""
+  foreach ($logFile in $jobLogFiles) {
+    $jobErrorMessages += Get-Content -Path $logFile.FullName -Raw
+    $jobErrorMessages += "`n"  # Add newline between logs
+  }
+
+  if ($jobErrorMessages -ne "") {
+    $errorMessages += "**Errors in job: $jobName**`n"
+    $errorMessages += $jobErrorMessages
+    $errorMessages += "`n"  # Newline between jobs
+  }
 }
 
-# Check if any error occurred during the pipeline execution
+# Write captured errors to error.txt (same logic as before)
 if ($errorMessages -ne $null) {
-  # Write the errors to the error.txt file
-  $errorsFilePath = Join-Path -Path $workspacePath -ChildPath "errors.txt"
-  
+  $errorsFilePath = Join-Path -Path $agentWorkDirectory -ChildPath "errors.txt"
   Write-Host "Errors detected! Writing to $errorsFilePath..."
   Out-File -FilePath $errorsFilePath -InputObject $errorMessages -Encoding UTF8
-  
-  # Publish errors.txt as artifact (optional, adjust path if needed)
-  if ($env:BUILD_ARTIFACTSTAGINGDIRECTORY) {
-    Write-Host "Publishing errors.txt as artifact..."
-    Copy-Item -Path $errorsFilePath -Destination $env:BUILD_ARTIFACTSTAGINGDIRECTORY -Force
-  } else {
-    Write-Warning "Build.ArtifactStagingDirectory not available. Unable to publish artifact."
-  }
 } else {
   Write-Host "Pipeline execution successful (no errors captured)."
 }
