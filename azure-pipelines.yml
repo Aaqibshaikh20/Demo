@@ -20,7 +20,7 @@ steps:
   displayName: 'npm install '
   
 - task: SendEmail@1  # Send email notification (replace 1 with actual extension version)
-  condition: always()  # Send email on any failure (or customize condition)
+  condition: failed()  # Send email on any failure (or customize condition)
   inputs:
     sendTo: $(emailRecipients)  # Use variable group for recipients
     subject: 'Azure DevOps Pipeline - $(Pipeline.Name) - $(Build.BuildNumber) - Outcome: $(System.DefaultOutcome)'
