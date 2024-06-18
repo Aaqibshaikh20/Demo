@@ -18,3 +18,22 @@ steps:
 - script: |
     npm install
   displayName: 'npm install '
+  
+- task: SendEmail@1  # Send email notification (replace 1 with actual extension version)
+  condition: always()  # Send email on any failure (or customize condition)
+  inputs:
+    sendTo: $(emailRecipients)  # Use variable group for recipients
+    subject: 'Azure DevOps Pipeline - $(Pipeline.Name) - $(Build.BuildNumber) - Outcome: $(System.DefaultOutcome)'
+    body: |  # Formatted email body with pipeline context
+      The pipeline $(Pipeline.Name) (Build number: $(Build.BuildNumber)) has finished with the outcome: $(System.DefaultOutcome).
+
+      **Stage Details:**
+      | Stage Name | Status |
+      |---|---|
+      | $(Build.Stages[0].DisplayName) | $(Build.Stages[0].Status) |  # Add more rows for additional stages
+      | ... | ... |
+
+      **Error Logs (if any):**
+      $(System.DefaultWorkingDirectory)\logs.txt  # Replace with your actual log path
+
+    attachments: $(System.DefaultWorkingDirectory)\logs.txt  # Attach log file (optional)
